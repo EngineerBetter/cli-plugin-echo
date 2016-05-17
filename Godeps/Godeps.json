@@ -1,0 +1,17 @@
+{
+	"ImportPath": "github.com/EngineerBetter/cli-plugin-echo",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v60",
+	"Deps": [
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/plugin",
+			"Comment": "v6.17.0-44-g60ef801",
+			"Rev": "60ef80149fde21ef2ab38d6eaba3860b945be0e9"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/plugin/models",
+			"Comment": "v6.17.0-44-g60ef801",
+			"Rev": "60ef80149fde21ef2ab38d6eaba3860b945be0e9"
+		}
+	]
+}
