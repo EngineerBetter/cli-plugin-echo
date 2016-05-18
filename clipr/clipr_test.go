@@ -17,7 +17,7 @@ var _ = Describe("CLIPR", func() {
 
 	BeforeEach(func() {
 		server = httptest.NewServer(nil)
-		Configure(server.Config, server.URL)
+		Configure(server.Config, server.URL, "../bin/osx/echo")
 	})
 
 	AfterEach(func() {

@@ -10,18 +10,22 @@ type IndexHandler struct {
 	Addr string
 }
 
+type FileHander struct {
+	Path string
+}
+
 func (h IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, responseBody, h.Addr, h.Addr)
 }
 
-func ServeOSX(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../bin/osx/echo")
+func (h FileHander) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, h.Path)
 }
 
-func Configure(server *http.Server, addr string) {
+func Configure(server *http.Server, addr, path string) {
 	mux := http.NewServeMux()
 	mux.Handle("/list", IndexHandler{Addr: addr})
-	mux.HandleFunc("/bin/osx/echo", ServeOSX)
+	mux.Handle("/bin/osx/echo", FileHander{Path: path})
 	server.Handler = mux
 }
 
@@ -29,7 +33,7 @@ func main() {
 	server := http.Server{}
 	fmt.Println("Starting")
 	err := server.ListenAndServe()
-	Configure(&server, server.Addr)
+	Configure(&server, server.Addr, "../bin/osx/echo")
 
 	if err != nil {
 		fmt.Println(err)
