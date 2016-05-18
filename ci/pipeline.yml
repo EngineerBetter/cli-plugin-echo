@@ -1,0 +1,15 @@
+---
+resources:
+- name: cli-plugin-echo
+  type: git
+  source:
+    uri: https://github.com/EngineerBetter/cli-plugin-echo.git
+    branch: master
+
+jobs:
+- name: cli-plugin-echo
+  plan:
+  - get: cli-plugin-echo
+    trigger: true
+  - task: test
+    file: cli-plugin-echo/ci/test.yml
