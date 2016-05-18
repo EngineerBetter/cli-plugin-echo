@@ -6,16 +6,23 @@ import (
 	"os"
 )
 
-func ServeIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, responseBody)
+type IndexHandler struct {
+	Addr string
+}
+
+func (h IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, responseBody, h.Addr, h.Addr)
 }
 
 func main() {
+	var server http.Server
+	indexHandler := IndexHandler{}
 	mux := http.NewServeMux()
-	mux.Handle("/", http.HandlerFunc(ServeIndex))
-	server := http.Server{Handler: mux}
+	mux.Handle("/", indexHandler)
+	server = http.Server{Handler: mux}
 	fmt.Println("Starting")
 	err := server.ListenAndServe()
+	indexHandler.Addr = server.Addr
 
 	if err != nil {
 		fmt.Println(err)
@@ -36,12 +43,12 @@ var responseBody = `{"plugins": [
     "binaries": [
       {
         "platform":"osx",
-        "url":"https://github.com/johndoe/plugin-repo/raw/master/bin/osx/echo",
+        "url":"%s/bin/osx/echo",
         "checksum":"2a087d5cddcfb057fbda91e611c33f46"
       },
       {
         "platform":"win64",
-        "url":"https://github.com/johndoe/plugin-repo/raw/master/bin/windows64/echo.exe",
+        "url":"%s/bin/windows64/echo.exe",
         "checksum":"b4550d6594a3358563b9dcb81e40fd66"
       }
     ]

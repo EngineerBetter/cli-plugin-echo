@@ -14,7 +14,11 @@ import (
 var _ = Describe("CLIPR", func() {
 	Describe("/", func() {
 		It("returns a listing containing the echo plugin", func() {
-			server := httptest.NewServer(http.HandlerFunc(ServeIndex))
+			server := httptest.NewServer(nil)
+
+			indexHandler := IndexHandler{}
+			indexHandler.Addr = server.URL
+			server.Config.Handler = indexHandler
 			defer server.Close()
 
 			resp, err := http.Get(server.URL)
@@ -23,7 +27,18 @@ var _ = Describe("CLIPR", func() {
 			json, err := simplejson.NewFromReader(resp.Body)
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Ω(json.Get("plugins").GetIndex(0).Get("name").MustString()).Should(Equal("echo"))
+			echoNode := json.Get("plugins").GetIndex(0)
+			Ω(echoNode.Get("name").MustString()).Should(Equal("echo"))
+			bins, err := echoNode.Get("binaries").Array()
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(bins).Should(ContainElement(SatisfyAll(
+				HaveKeyWithValue("platform", "osx"),
+				HaveKeyWithValue("url", server.URL+"/bin/osx/echo"),
+			)))
+			Ω(bins).Should(ContainElement(SatisfyAll(
+				HaveKeyWithValue("platform", "win64"),
+				HaveKeyWithValue("url", server.URL+"/bin/windows64/echo.exe"),
+			)))
 		})
 	})
 })
