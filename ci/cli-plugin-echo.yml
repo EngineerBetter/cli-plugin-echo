@@ -1,4 +1,11 @@
 ---
+resources:
+- name: cli-plugin-echo-master
+  type: git
+  source:
+    uri: https://github.com/EngineerBetter/cli-plugin-echo.git
+    branch: master
+
 jobs:
 - name: cli-plugin-echo
   plan:
@@ -10,12 +17,7 @@ jobs:
       image_resource:
         type: docker-image
         source: {repository: ubuntu}
+      inputs:
+      - name: cli-plugin-echo-master
       run:
-        path: cli-plugin-echo/ci/scripts/test
-
-resources:
-- name: cli-plugin-echo-master
-  type: git
-  source:
-    uri: https://github.com/EngineerBetter/cli-plugin-echo.git
-    branch: master
+        path: cli-plugin-echo-master/ci/scripts/test
