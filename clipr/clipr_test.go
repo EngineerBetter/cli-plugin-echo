@@ -24,9 +24,9 @@ var _ = Describe("CLIPR", func() {
 		server.Close()
 	})
 
-	Describe("/", func() {
+	Describe("/list", func() {
 		It("returns a listing containing the echo plugin", func() {
-			resp, err := http.Get(server.URL)
+			resp, err := http.Get(server.URL + "/list")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			json, err := simplejson.NewFromReader(resp.Body)
@@ -49,7 +49,7 @@ var _ = Describe("CLIPR", func() {
 
 	Describe("serving binaries", func() {
 		It("serves the plugin binaries as advertised", func() {
-			resp, err := http.Get(server.URL)
+			resp, err := http.Get(server.URL + "/list")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			json, err := simplejson.NewFromReader(resp.Body)

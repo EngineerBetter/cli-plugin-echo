@@ -11,11 +11,6 @@ type IndexHandler struct {
 }
 
 func (h IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-
 	fmt.Fprintf(w, responseBody, h.Addr, h.Addr)
 }
 
@@ -25,7 +20,7 @@ func ServeOSX(w http.ResponseWriter, r *http.Request) {
 
 func Configure(server *http.Server, addr string) {
 	mux := http.NewServeMux()
-	mux.Handle("/", IndexHandler{Addr: addr})
+	mux.Handle("/list", IndexHandler{Addr: addr})
 	mux.HandleFunc("/bin/osx/echo", ServeOSX)
 	server.Handler = mux
 }
