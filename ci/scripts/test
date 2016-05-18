@@ -2,10 +2,7 @@
 
 set -xe
 
-export GOPATH=$PWD/cli-plugin-echo
-export PATH=$GOPATH/bin:$PATH
-
-go install github.com/onsi/ginkgo/ginkgo
+export GOPATH=$PWD/gopath
 
 cd ${GOPATH}/src/github.com/EngineerBetter/cli-plugin-echo
 ginkgo -r -v

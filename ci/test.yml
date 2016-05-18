@@ -1,8 +1,9 @@
 platform: linux
 image_resource:
   type: docker-image
-  source: {repository: ubuntu}
+  source: {repository: cfmobile/ginkgo}
 inputs:
 - name: cli-plugin-echo
+  path: gopath/src/github.com/EngineerBetter/cli-plugin-echo
 run:
-  path: cli-plugin-echo/ci/scripts/test
+  path: gopath/src/github.com/EngineerBetter/cli-plugin-echo/ci/scripts/test
