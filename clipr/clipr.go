@@ -51,12 +51,12 @@ var responseBody = `{"plugins": [
       {
         "platform":"osx",
         "url":"%s/bin/osx/echo",
-        "checksum":"2a087d5cddcfb057fbda91e611c33f46"
+        "checksum":"86aed94e9efd8bdda669c96fc36c979d9acbea5c"
       },
       {
         "platform":"win64",
         "url":"%s/bin/windows64/echo.exe",
-        "checksum":"b4550d6594a3358563b9dcb81e40fd66"
+        "checksum":"3062d690bc2991b93c29b823771c19257a7f42f5"
       }
     ]
   }
