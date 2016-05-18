@@ -7,20 +7,29 @@ import (
 
 	"github.com/bitly/go-simplejson"
 
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 )
 
 var _ = Describe("CLIPR", func() {
+	var server *httptest.Server
+
+	BeforeEach(func() {
+		server = httptest.NewServer(nil)
+		indexHandler := IndexHandler{Addr: server.URL}
+		mux := http.NewServeMux()
+		mux.HandleFunc("/bin/osx/echo", ServeOSX)
+		mux.Handle("/", indexHandler)
+		server.Config.Handler = mux
+	})
+
+	AfterEach(func() {
+		server.Close()
+	})
+
 	Describe("/", func() {
 		It("returns a listing containing the echo plugin", func() {
-			server := httptest.NewServer(nil)
-
-			indexHandler := IndexHandler{}
-			indexHandler.Addr = server.URL
-			server.Config.Handler = indexHandler
-			defer server.Close()
-
 			resp, err := http.Get(server.URL)
 			Ω(err).ShouldNot(HaveOccurred())
 
@@ -39,6 +48,26 @@ var _ = Describe("CLIPR", func() {
 				HaveKeyWithValue("platform", "win64"),
 				HaveKeyWithValue("url", server.URL+"/bin/windows64/echo.exe"),
 			)))
+		})
+	})
+
+	Describe("serving binaries", func() {
+		It("serves the plugin binaries as advertised", func() {
+			resp, err := http.Get(server.URL)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			json, err := simplejson.NewFromReader(resp.Body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			firstUrl := json.Get("plugins").GetIndex(0).Get("binaries").GetIndex(0).Get("url").MustString()
+			resp, err = http.Get(firstUrl)
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(resp.StatusCode).Should(Equal(200))
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			Ω(err).ShouldNot(HaveOccurred())
+			fileBytes, err := ioutil.ReadFile("../bin/osx/echo")
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(bodyBytes).Should(Equal(fileBytes))
 		})
 	})
 })
