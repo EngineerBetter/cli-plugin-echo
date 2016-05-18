@@ -17,11 +17,7 @@ var _ = Describe("CLIPR", func() {
 
 	BeforeEach(func() {
 		server = httptest.NewServer(nil)
-		indexHandler := IndexHandler{Addr: server.URL}
-		mux := http.NewServeMux()
-		mux.HandleFunc("/bin/osx/echo", ServeOSX)
-		mux.Handle("/", indexHandler)
-		server.Config.Handler = mux
+		Configure(server.Config, server.URL)
 	})
 
 	AfterEach(func() {

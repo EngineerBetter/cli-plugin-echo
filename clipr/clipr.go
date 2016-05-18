@@ -23,16 +23,18 @@ func ServeOSX(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "../bin/osx/echo")
 }
 
-func main() {
-	var server http.Server
-	indexHandler := IndexHandler{}
+func Configure(server *http.Server, addr string) {
 	mux := http.NewServeMux()
-	mux.Handle("/", indexHandler)
+	mux.Handle("/", IndexHandler{Addr: addr})
 	mux.HandleFunc("/bin/osx/echo", ServeOSX)
-	server = http.Server{Handler: mux}
+	server.Handler = mux
+}
+
+func main() {
+	server := http.Server{}
 	fmt.Println("Starting")
 	err := server.ListenAndServe()
-	indexHandler.Addr = server.Addr
+	Configure(&server, server.Addr)
 
 	if err != nil {
 		fmt.Println(err)
